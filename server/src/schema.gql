@@ -1,0 +1,42 @@
+exports.typeDefs = `
+
+type Query {
+	user(id: ID!): User!
+  users: [User!]!
+	messages(conversationId: ID!): [Message!]!
+}
+
+type Mutation {
+	createMessage(
+		senderId: ID!
+		conversationId: ID!
+		text: String!
+	): Message!
+}
+
+type Subscription {
+	newMessage: Message!
+}
+
+type User {
+	id: ID!
+	name: String!
+	conversations: [Conversation!]!
+}
+
+type Conversation {
+	id: ID!
+	type: Int!
+	label: String!
+	users: [User!]!
+	messages: [Message!]!
+	lastMessage: Message
+}
+
+type Message {
+	id: ID!
+	sender: User!
+	text: String!
+}
+
+`

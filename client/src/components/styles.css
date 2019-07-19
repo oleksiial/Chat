@@ -1,0 +1,30 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.conversation--listitem {
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid brown;
+  width: 200px;
+}
+
+.messages {
+  margin: 5px;
+  width: 100%;
+}
+
+.message {
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid lightskyblue;
+}
+
+.messageinput {
+  margin: 5px;
+}
+
+.app {
+  display: flex;
+}
