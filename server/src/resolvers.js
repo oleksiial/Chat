@@ -1,39 +1,79 @@
-const DataLoader = require('dataloader');
-const { PubSub } = require('graphql-subscriptions');
+const { PubSub, withFilter } = require('graphql-subscriptions');
 const pubsub = new PubSub();
-const userLoader = new DataLoader(id => Promise.all([getUser(id[0])]));
+const MESSAGE_SENT = 'MESSAGE_SENT';
 
-const MESSAGE_CREATED = 'MESSAGE_CREATED';
+const { getConversationsByUserId, getConversationParticipants } = require('./db/conversations');
+const { getMessages, getLastMessage } = require('./db/messages');
+const { getUserById, getUsers } = require('./db/users');
 
-const { getConversation, getConversationsByUserId } = require('./db/conversations');
-const { getMessages, createMessage, getLastMessage } = require('./db/messages');
-const { getUser, getUsers, getUserByConversationId } = require('./db/users');
+const { signUp, signIn, signOut } = require('./api/auth');
+const { startConversation, sendMessage } = require('./api/conversations');
+
+const authenticated = next => (root, args, context, info) => {
+  if (!context.currentUser) {
+    throw new Error(`Unauthenticated!`);
+  }
+  return next(root, args, context, info);
+};
 
 exports.resolvers = {
   Query: {
     users: () => getUsers().then(res => res),
-    user: (_, { id }) => userLoader.load(id).then(res => res),
-    messages: (_, { conversationId }) => getMessages(conversationId).then(res => res)
+    user: (_, { id }) => getUserById(id).then(res => res),
+    messages: (_, { conversationId }) => getMessages(conversationId).then(res => res),
+    me: authenticated((_, __, context) => context.currentUser)
   },
   Mutation: {
-    createMessage: async (_, { senderId, conversationId, text }) => {
-      const message = createMessage(senderId, conversationId, text);
-      await pubsub.publish(MESSAGE_CREATED, { newMessage: message });
+    signUp: async (_, { username, password, passwordConfirmation }, { res }) => {
+      const authRes = await signUp(username, password, passwordConfirmation);
+      res.cookie('sid', authRes.sessionId);
+      return authRes.user;
+    },
+    signIn: async (_, { username, password }, { res }) => {
+      const authRes = await signIn(username, password);
+      res.cookie('sid', authRes.sessionId);
+      return authRes.user;
+    },
+    signOut: authenticated(async (_, __, { res, currentUser }) => {
+      const authRes = await signOut(currentUser.id);
+      res.clearCookie('sid');
+      return authRes;
+    }),
+    startConversation: authenticated(async (_, { userId, label }, { currentUser }) => {
+      const conversation = await startConversation(currentUser.id, userId, label);
+      return conversation;
+    }),
+    sendMessage: authenticated(async (_, { conversationId, text }, { currentUser }) => {
+      const message = await sendMessage(currentUser.id, conversationId, text);
+      pubsub.publish(MESSAGE_SENT, {
+        message,
+        conversationId
+      });
       return message;
-    }
+    })
   },
   Subscription: {
-    newMessage: { subscribe: () => pubsub.asyncIterator([MESSAGE_CREATED]) }
+    message: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(MESSAGE_SENT),
+        (payload, variables, { currentUser }) => {
+          return (
+            payload.conversationId === variables.conversationId &&
+            payload.message.user_id !== currentUser.id
+          );
+        }
+      )
+    }
   },
   User: {
     conversations: obj => getConversationsByUserId(obj.id).then(res => res)
   },
   Conversation: {
-    users: obj => getUserByConversationId(obj.id).then(res => res),
+    users: obj => getConversationParticipants(obj.id).then(res => res),
     messages: obj => getMessages(obj.id).then(res => res),
     lastMessage: obj => getLastMessage(obj.id).then(res => res)
   },
   Message: {
-    sender: obj => userLoader.load(obj.sender_id).then(res => res)
+    user: obj => getUserById(obj.user_id).then(res => res)
   }
 };

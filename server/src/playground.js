@@ -2,17 +2,15 @@
 // const { getMessages, createMessage, getLastMessage } = require('./db/messages');
 const usersReqs = require('./db/users');
 const sessionsReqs = require('./db/sessions');
-const authReqs = require('./auth');
+const convReqs = require('./db/conversations');
+const messageReqs = require('./db/messages');
+
+const { startConversation, sendMessage } = require('./api/conversations');
+const authReqs = require('./api/auth');
 
 const run = async () => {
-  const users = await usersReqs.getUsers();
-  console.log('users', users);
-
-  // const a = await authReqs.signUp('A', '123', '123');
-  // console.log(a);
-
-  const a = await authReqs.signIn('A', '123');
-  console.log(a);
+  const message = await sendMessage(1, 1, 'Hello from A playground');
+  console.log(message);
 };
 
 run();

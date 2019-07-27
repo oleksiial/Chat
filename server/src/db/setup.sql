@@ -1,10 +1,10 @@
 DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION "uuid-ossp";
 
 CREATE TABLE users (
     id BIGSERIAL PRIMARY KEY,
-    username varchar(50) NOT NULL,
+    username varchar(50) NOT NULL UNIQUE,
     password_hash varchar(500) NOT NULL,
     created_at INT DEFAULT ceil(extract(epoch from now()))
 );
@@ -43,14 +43,15 @@ CREATE TABLE user_conversation (
     CONSTRAINT pkey PRIMARY KEY (user_id, conversation_id)
 );
 
+INSERT INTO public.conversation_types(type) VALUES ('private');
+INSERT INTO public.conversation_types(type) VALUES ('group');
+
 -- INSERT INTO public.users(username, password_hash) VALUES ('A', '1');
 -- INSERT INTO public.users(username, password_hash) VALUES ('B', '2');
 -- INSERT INTO public.users(username, password_hash) VALUES ('C', '3');
 -- INSERT INTO public.users(username, password_hash) VALUES ('D', '4');
 -- INSERT INTO public.users(username, password_hash) VALUES ('E', '5');
 
--- INSERT INTO public.conversation_type(type) VALUES ('private');
--- INSERT INTO public.conversation_type(type) VALUES ('group');
 
 -- INSERT INTO public.conversations(type_id, label) VALUES (1, 'A TO B');
 -- INSERT INTO public.conversations(type_id, label) VALUES (2, 'ROOM 1');

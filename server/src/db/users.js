@@ -26,17 +26,9 @@ exports.getUsersByUsernameTemplate = async username => {
   return res.rows;
 };
 
-exports.getUserByConversationId = async conversationId => {
-  const res = await query(
-    'select id, username from user_conversation join users on user_id = id where conversation_id=$1',
-    [conversationId]
-  );
-  return res.rows[0];
-};
-
 exports.getUserBySessionId = async sessionId => {
   const res = await query(
-    'select u.id, u.username from sessions join users u on user_id = u.id where id=$1',
+    'select u.id, u.username from sessions s join users u on s.user_id = u.id where s.id=$1',
     [sessionId]
   );
   return res.rows[0];
@@ -44,5 +36,13 @@ exports.getUserBySessionId = async sessionId => {
 
 exports.getUsers = async () => {
   const res = await query('select id, username from users');
+  return res.rows;
+};
+
+exports.joinConversation = async (userId, conversationId) => {
+  const res = await query(
+    'INSERT INTO public.user_conversation(user_id, conversation_id) VALUES ($1, $2)',
+    [userId, conversationId]
+  );
   return res.rows;
 };

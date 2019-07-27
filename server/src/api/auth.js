@@ -1,10 +1,10 @@
 const bcrypt = require('bcrypt');
 
-const { createUser, getUserByUsername } = require('./db/users');
-const { createSession, deleteSession } = require('./db/sessions');
+const { createUser, getUserByUsername, getUserBySessionId } = require('../db/users');
+const { createSession, deleteSession } = require('../db/sessions');
 
-const signUp = async (username, password, passwordConfigmation) => {
-  if (password !== passwordConfigmation) {
+const signUp = async (username, password, passwordConfirmation) => {
+  if (password !== passwordConfirmation) {
     throw new Error('passwords dont match');
   }
 
@@ -14,7 +14,7 @@ const signUp = async (username, password, passwordConfigmation) => {
 
   const sessionId = await createSession(user.id);
 
-  return { user, sessionId };
+  return { user, sessionId: sessionId.id };
 };
 
 const signIn = async (username, password) => {
@@ -31,16 +31,19 @@ const signIn = async (username, password) => {
   await deleteSession(user.id);
   const sessionId = await createSession(user.id);
 
-  return { user: { id: user.id, username: user.username }, sessionId };
+  return { user: { id: user.id, username: user.username }, sessionId: sessionId.id };
 };
 
 const signOut = async userId => {
   const result = await deleteSession(userId);
-  return result;
+  return true;
 };
+
+const exchangeSessionId = async sessionId => getUserBySessionId(sessionId);
 
 module.exports = {
   signUp,
   signIn,
-  signOut
+  signOut,
+  exchangeSessionId
 };

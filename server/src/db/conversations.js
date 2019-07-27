@@ -5,39 +5,43 @@ exports.getConversations = async () => {
   return res.rows;
 };
 
-exports.getConversation = async id => {
-  const res = await query('select * from conversations where id=$1', [id]);
+exports.getConversationById = async conversationId => {
+  const res = await query('select * from conversations where id=$1', [conversationId]);
   return res.rows[0];
 };
 
 exports.getConversationsByUserId = async userId => {
   const res = await query(
-    'select id, label, type_id as type from user_conversation join conversations on conversation_id = id where user_id=$1',
+    `select c.id, c.label, ct.type 
+    from user_conversation uc
+    join conversations c on uc.conversation_id = c.id
+    join conversation_types ct on ct.id = c.type_id
+    where user_id=$1`,
     [userId]
   );
   return res.rows;
 };
 
-exports.getConversationParticipants = async id => {
+exports.getConversationParticipants = async conversationId => {
   const res = await query(
-    'select user_id, name from user_conversation join users on user_conversation.user_id = users.id where conversation_id = $1',
-    [id]
+    'select u.id, u.username from user_conversation uc join users u on uc.user_id = u.id where uc.conversation_id = $1',
+    [conversationId]
   );
   return res.rows;
 };
 
-exports.joinConversation = async (conversation_id, user_id) => {
+exports.checkParticipant = async (userId, conversationId) => {
   const res = await query(
-    'INSERT INTO public.user_conversation(user_id, conversation_id) VALUES ($1, $2)',
-    [user_id, conversation_id]
+    'select * from user_conversation where user_id = $1 and conversation_id = $2',
+    [userId, conversationId]
   );
-  return res.rows;
+  return res.rows.length === 1;
 };
 
-exports.createConversation = async (type, label) => {
-  const res = await query('INSERT INTO public.conversations(type_id, label) VALUES($1, $2)', [
-    type,
-    label
-  ]);
-  return res.rows;
+exports.createConversation = async (typeId, label) => {
+  const res = await query(
+    'INSERT INTO public.conversations(type_id, label) VALUES($1, $2) returning id, label, (select type from conversation_types ct where ct.id = type_id)',
+    [typeId, label]
+  );
+  return res.rows[0];
 };

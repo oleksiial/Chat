@@ -4,29 +4,47 @@ type Query {
 	user(id: ID!): User!
   users: [User!]!
 	messages(conversationId: ID!): [Message!]!
+	me: User!
 }
 
 type Mutation {
-	createMessage(
-		senderId: ID!
+	signUp(
+		username: String!
+		password: String!
+		passwordConfirmation: String!
+	): User!
+
+	signIn(
+		username: String!
+		password: String!
+	): User!
+
+	signOut: Boolean!
+
+	startConversation(
+		userId: ID!
+		label: String!
+	): Conversation!
+
+	sendMessage(
 		conversationId: ID!
 		text: String!
 	): Message!
 }
 
 type Subscription {
-	newMessage: Message!
+	message(conversationId: ID!): Message!
 }
 
 type User {
 	id: ID!
-	name: String!
+	username: String!
 	conversations: [Conversation!]!
 }
 
 type Conversation {
 	id: ID!
-	type: Int!
+	type: String!
 	label: String!
 	users: [User!]!
 	messages: [Message!]!
@@ -35,7 +53,7 @@ type Conversation {
 
 type Message {
 	id: ID!
-	sender: User!
+	user: User!
 	text: String!
 }
 

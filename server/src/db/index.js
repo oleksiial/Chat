@@ -8,10 +8,8 @@ const pool = new Pool({
   port: 5432
 });
 
-let count = 0;
 module.exports = {
-  query: (text, params, callback) => {
-    console.log(++count);
-    return pool.query(text, params, callback);
+  query: (text, params) => {
+    return pool.query(text, params);
   }
 };
