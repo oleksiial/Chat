@@ -10,10 +10,12 @@ const Messages = ({ conversationId, data }) => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
+  console.log(data);
+
   return (
     <div className="messages">
       {messages.map(m => (
-        <Message key={m.id} id={m.id} text={m.text} sender={m.sender} />
+        <Message key={m.id} id={m.id} text={m.text} user={m.user} />
       ))}
       <NewMessageInput senderId={1} conversationId={conversationId} />
     </div>

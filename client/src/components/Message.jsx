@@ -1,12 +1,14 @@
 import React from 'react';
 import './styles.css';
 
-const Message = ({ id, sender, text }) => (
-  <div className="message">
-    <p>
-      {sender.id}: {text}
-    </p>
-  </div>
-);
-
+const Message = ({ user, text }) => {
+  console.log(user);
+  return (
+    <div className="message">
+      <p>
+        {user.id}: {text}
+      </p>
+    </div>
+  );
+};
 export default Message;

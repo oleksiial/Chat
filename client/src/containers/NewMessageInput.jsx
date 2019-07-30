@@ -1,6 +1,6 @@
 import React from 'react';
 import { graphql } from 'react-apollo';
-import { SEND_MESSAGE, GET_MESSAGES, GET_USER } from '../requests';
+import { NEW_MESSAGE, GET_MESSAGES, SIGN_IN } from '../requests';
 import '../components/styles.css';
 
 const NewMessageInput = ({ mutate, senderId, conversationId }) => {
@@ -23,16 +23,19 @@ const update_GET_MESSAGES = (proxy, convId, newMessage) => {
     query: GET_MESSAGES,
     variables: { conversationId: convId }
   });
-  proxy.writeQuery({
-    query: GET_MESSAGES,
-    variables: { conversationId: convId },
-    data: { messages: [...messages, newMessage] }
-  });
+
+  if (!messages.find(m => m.id === newMessage.id)) {
+    proxy.writeQuery({
+      query: GET_MESSAGES,
+      variables: { conversationId: convId },
+      data: { messages: [...messages, newMessage] }
+    });
+  }
 };
 
-const update_GET_USER = (proxy, convId, newMessage) => {
+const update_SIGN_IN = (proxy, convId, newMessage) => {
   const { user } = proxy.readQuery({
-    query: GET_USER,
+    query: SIGN_IN,
     variables: { id: 1 }
   });
 
@@ -41,7 +44,7 @@ const update_GET_USER = (proxy, convId, newMessage) => {
   );
 
   proxy.writeQuery({
-    query: GET_USER,
+    query: SIGN_IN,
     variables: { id: 1 },
     data: {
       user: {
@@ -52,11 +55,11 @@ const update_GET_USER = (proxy, convId, newMessage) => {
   });
 };
 
-export default graphql(SEND_MESSAGE, {
+export default graphql(NEW_MESSAGE, {
   options: props => ({
     update: (proxy, { data: { createMessage } }) => {
       update_GET_MESSAGES(proxy, props.conversationId, createMessage);
-      update_GET_USER(proxy, props.conversationId, createMessage);
+      update_SIGN_IN(proxy, props.conversationId, createMessage);
     }
   })
 })(NewMessageInput);
