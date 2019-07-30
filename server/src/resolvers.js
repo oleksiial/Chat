@@ -21,18 +21,19 @@ exports.resolvers = {
     users: () => getUsers().then(res => res),
     user: (_, { id }) => getUserById(id).then(res => res),
     messages: (_, { conversationId }) => getMessages(conversationId).then(res => res),
-    me: authenticated((_, __, context) => context.currentUser)
+    me: authenticated((_, __, context) => context.currentUser),
+    validate: (_, __, context) => !!context.currentUser
   },
   Mutation: {
     signUp: async (_, { username, password, passwordConfirmation }, { res }) => {
       const authRes = await signUp(username, password, passwordConfirmation);
       res.cookie('sid', authRes.sessionId);
-      return authRes.user;
+      return authRes.sessionId;
     },
     signIn: async (_, { username, password }, { res }) => {
       const authRes = await signIn(username, password);
       res.cookie('sid', authRes.sessionId);
-      return authRes.user;
+      return authRes.sessionId;
     },
     signOut: authenticated(async (_, __, { res, currentUser }) => {
       const authRes = await signOut(currentUser.id);

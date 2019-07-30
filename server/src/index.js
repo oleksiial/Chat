@@ -9,6 +9,11 @@ const { typeDefs } = require('./schema.gql');
 const { exchangeSessionId } = require('./api/auth');
 
 const PORT = process.env.PORT || 4000;
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  credentials: true
+};
+
 const app = express();
 app.use(cookieParser());
 
@@ -39,7 +44,7 @@ const apolloServer = new ApolloServer({
     }
   }
 });
-apolloServer.applyMiddleware({ app });
+apolloServer.applyMiddleware({ app, cors: corsOptions });
 
 const httpServer = createServer(app);
 apolloServer.installSubscriptionHandlers(httpServer);

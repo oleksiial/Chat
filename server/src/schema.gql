@@ -5,6 +5,7 @@ type Query {
   users: [User!]!
 	messages(conversationId: ID!): [Message!]!
 	me: User!
+	validate: Boolean!
 }
 
 type Mutation {
@@ -12,12 +13,12 @@ type Mutation {
 		username: String!
 		password: String!
 		passwordConfirmation: String!
-	): User!
+	): String!
 
 	signIn(
 		username: String!
 		password: String!
-	): User!
+	): String!
 
 	signOut: Boolean!
 
