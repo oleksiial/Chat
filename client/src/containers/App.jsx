@@ -1,7 +1,9 @@
 import React from 'react';
+import { compose } from 'recompose';
 
 import AppRouter from '../AppRouter';
 import sessionManager from '../hocs/sessionManager';
+import entitiesLoadingManager from '../hocs/entitiesLoadingManager';
 
 const App = () => {
   return (
@@ -11,4 +13,8 @@ const App = () => {
   );
 };
 
-export default sessionManager(App);
+export default compose(
+  entitiesLoadingManager,
+
+  sessionManager
+)(App);

@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Redirect, Switch } from 'react-router-dom';
 
 import ROUTES from './constants';
@@ -6,7 +6,7 @@ import UnauthorizedContent from './UnauthorizedContent';
 import AuthorizedContent from './AuthorizedContent';
 import SignForm from '../containers/SignForm';
 import Content from '../containers/Content';
-import SessionContext from '../context/sessionContext';
+import useSessionContext from '../hooks/useSessionContext';
 
 const View = ({ sessionLoading, isLoggedIn }) => {
   useRouter(sessionLoading, isLoggedIn);
@@ -25,7 +25,7 @@ const View = ({ sessionLoading, isLoggedIn }) => {
 };
 
 function useRouter(sessionLoading, isLoggedIn) {
-  const { setSessionLoading, setIsLoggedIn } = useContext(SessionContext);
+  const { setSessionLoading, setIsLoggedIn } = useSessionContext();
 
   useEffect(() => {
     setSessionLoading(sessionLoading);

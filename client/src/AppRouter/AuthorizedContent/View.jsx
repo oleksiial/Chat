@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 
 import ROUTES from '../constants';
-import SessionContext from '../../context/sessionContext';
+import useSessionContext from '../../hooks/useSessionContext';
 
 const View = ({ path, component }) => {
-  const { sessionLoading, isLoggedIn } = useContext(SessionContext);
+  const { sessionLoading, isLoggedIn } = useSessionContext();
 
   if (sessionLoading) return <div>Loading...</div>;
 
