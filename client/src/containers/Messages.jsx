@@ -1,30 +1,15 @@
 import React from 'react';
-import { graphql } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 
-import { GET_MESSAGES, MESSAGE_SUBSCRIPTION } from '../requests';
+import { GET_MESSAGES } from '../requests';
 import Message from '../components/Message';
 import NewMessageInput from './NewMessageInput';
+import withMessageSubscriptions from '../hocs/withMessageSubscription';
 
 const Messages = ({ conversationId, data }) => {
-  const { loading, error, messages, subscribeToMore } = data;
+  const { loading, error, messages } = data;
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
-
-  subscribeToMore({
-    document: MESSAGE_SUBSCRIPTION,
-    variables: { conversationId },
-    updateQuery: (
-      { messages },
-      {
-        subscriptionData: {
-          data: { message }
-        }
-      }
-    ) => {
-      if (!message) return messages;
-      return { messages: [...messages, message] };
-    }
-  });
 
   return (
     <div className="messages">
@@ -36,6 +21,9 @@ const Messages = ({ conversationId, data }) => {
   );
 };
 
-export default graphql(GET_MESSAGES, {
-  options: props => ({ variables: { conversationId: props.conversationId } })
-})(Messages);
+export default compose(
+  graphql(GET_MESSAGES, {
+    options: props => ({ variables: { conversationId: props.conversationId } })
+  }),
+  withMessageSubscriptions
+)(Messages);

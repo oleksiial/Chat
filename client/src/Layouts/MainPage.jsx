@@ -4,42 +4,16 @@ import { graphql, compose } from 'react-apollo';
 import User from '../components/User';
 import ConversationsList from '../components/ConversationsList';
 import Messages from '../containers/Messages';
-import { GET_ME, MESSAGE_SUBSCRIPTION } from '../requests';
+import { GET_ME } from '../requests';
 import SignOutButton from '../containers/SignOutButton';
+import withLastMessageSubscriptions from '../hocs/withLastMessageSubscriptions';
 
-function MainPageLayout({ isLoading, data, subscribeToMore }) {
+function MainPageLayout({ isLoading, data }) {
   const [currentConversationId, setCurrentConversationId] = useState(null);
 
   if (isLoading) return <div>Loading...</div>;
 
   const { id, username, conversations } = data;
-
-  conversations.forEach(c => {
-    subscribeToMore({
-      document: MESSAGE_SUBSCRIPTION,
-      variables: { conversationId: c.id },
-      updateQuery: (
-        { me },
-        {
-          subscriptionData: {
-            data: { message }
-          }
-        }
-      ) => {
-        if (!message) return me;
-        return {
-          me: {
-            ...me,
-            conversations: me.conversations.map(conv =>
-              conv.id === c.id
-                ? { ...conv, messages: [...(conv.messages || []), message], lastMessage: message }
-                : conv
-            )
-          }
-        };
-      }
-    });
-  });
 
   return (
     <div className="mainPageWrap">
@@ -65,5 +39,6 @@ export default compose(
         subscribeToMore
       };
     }
-  })
+  }),
+  withLastMessageSubscriptions
 )(MainPageLayout);
