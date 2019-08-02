@@ -19,13 +19,13 @@ export const GET_MESSAGES = gql`
 `;
 
 export const NEW_MESSAGE = gql`
-  mutation createMessage($senderId: ID!, $conversationId: ID!, $text: String!) {
-    createMessage(conversationId: $conversationId, senderId: $senderId, text: $text) {
+  mutation sendMessage($conversationId: ID!, $text: String!) {
+    sendMessage(conversationId: $conversationId, text: $text) {
       id
       text
-      sender {
+      user {
         id
-        name
+        username
       }
     }
   }
@@ -34,6 +34,12 @@ export const NEW_MESSAGE = gql`
 export const SIGN_IN = gql`
   mutation signIn($username: String!, $password: String!) {
     signIn(username: $username, password: $password)
+  }
+`;
+
+export const SIGN_OUT = gql`
+  mutation signOut {
+    signOut
   }
 `;
 
@@ -61,11 +67,12 @@ export const GET_ME = gql`
 
 export const MESSAGE_SUBSCRIPTION = gql`
   subscription($conversationId: ID!) {
-    newMessage(conversationId: $conversationId) {
+    message(conversationId: $conversationId) {
       id
       text
       user {
         id
+        username
       }
     }
   }

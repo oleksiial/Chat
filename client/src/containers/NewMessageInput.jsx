@@ -1,12 +1,12 @@
 import React from 'react';
 import { graphql } from 'react-apollo';
-import { NEW_MESSAGE, GET_MESSAGES, SIGN_IN } from '../requests';
+import { NEW_MESSAGE, GET_MESSAGES, GET_ME } from '../requests';
 import '../components/styles.css';
 
-const NewMessageInput = ({ mutate, senderId, conversationId }) => {
+const NewMessageInput = ({ mutate, conversationId }) => {
   let input = null;
   const handleClick = () => {
-    mutate({ variables: { text: input.value, senderId, conversationId } });
+    mutate({ variables: { text: input.value, conversationId } });
     input.value = '';
   };
 
@@ -18,37 +18,35 @@ const NewMessageInput = ({ mutate, senderId, conversationId }) => {
   );
 };
 
-const update_GET_MESSAGES = (proxy, convId, newMessage) => {
+const update_GET_MESSAGES = (proxy, conversationId, newMessage) => {
   const { messages } = proxy.readQuery({
     query: GET_MESSAGES,
-    variables: { conversationId: convId }
+    variables: { conversationId }
   });
 
   if (!messages.find(m => m.id === newMessage.id)) {
     proxy.writeQuery({
       query: GET_MESSAGES,
-      variables: { conversationId: convId },
+      variables: { conversationId },
       data: { messages: [...messages, newMessage] }
     });
   }
 };
 
 const update_SIGN_IN = (proxy, convId, newMessage) => {
-  const { user } = proxy.readQuery({
-    query: SIGN_IN,
-    variables: { id: 1 }
+  const { me } = proxy.readQuery({
+    query: GET_ME
   });
 
-  const conversations = user.conversations.map(c =>
+  const conversations = me.conversations.map(c =>
     c.id === convId ? { ...c, lastMessage: newMessage } : c
   );
 
   proxy.writeQuery({
-    query: SIGN_IN,
-    variables: { id: 1 },
+    query: GET_ME,
     data: {
-      user: {
-        ...user,
+      me: {
+        ...me,
         conversations
       }
     }
@@ -57,9 +55,9 @@ const update_SIGN_IN = (proxy, convId, newMessage) => {
 
 export default graphql(NEW_MESSAGE, {
   options: props => ({
-    update: (proxy, { data: { createMessage } }) => {
-      update_GET_MESSAGES(proxy, props.conversationId, createMessage);
-      update_SIGN_IN(proxy, props.conversationId, createMessage);
+    update: (proxy, { data: { sendMessage } }) => {
+      update_GET_MESSAGES(proxy, props.conversationId, sendMessage);
+      update_SIGN_IN(proxy, props.conversationId, sendMessage);
     }
   })
 })(NewMessageInput);

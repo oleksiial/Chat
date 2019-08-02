@@ -9,7 +9,6 @@ export default WrappedComponent =>
       {
         entitiesLoading: {
           user: false,
-          rooms: false,
           conversations: false,
           messages: false
         }

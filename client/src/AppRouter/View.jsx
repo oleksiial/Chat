@@ -5,8 +5,9 @@ import ROUTES from './constants';
 import UnauthorizedContent from './UnauthorizedContent';
 import AuthorizedContent from './AuthorizedContent';
 import SignForm from '../containers/SignForm';
-import Content from '../containers/Content';
+import MainPage from '../Layouts/MainPage';
 import useSessionContext from '../hooks/useSessionContext';
+import useEntitiesLoadingContext from '../hooks/useEntitiesLoadingContext';
 
 const View = ({ sessionLoading, isLoggedIn }) => {
   useRouter(sessionLoading, isLoggedIn);
@@ -16,7 +17,7 @@ const View = ({ sessionLoading, isLoggedIn }) => {
       <Switch>
         <UnauthorizedContent path={ROUTES.login} component={SignForm} />
 
-        <AuthorizedContent path={ROUTES.home} component={Content} />
+        <AuthorizedContent path={ROUTES.home} component={MainPage} />
 
         <Redirect to={ROUTES.home} />
       </Switch>
@@ -25,12 +26,14 @@ const View = ({ sessionLoading, isLoggedIn }) => {
 };
 
 function useRouter(sessionLoading, isLoggedIn) {
-  const { setSessionLoading, setIsLoggedIn } = useSessionContext();
+  const { setIsLoggedIn } = useSessionContext();
+
+  const { setEntitiesLoading } = useEntitiesLoadingContext();
 
   useEffect(() => {
-    setSessionLoading(sessionLoading);
+    setEntitiesLoading('user', sessionLoading);
     setIsLoggedIn(isLoggedIn);
-  }, [sessionLoading, isLoggedIn, setSessionLoading, setIsLoggedIn]);
+  }, [sessionLoading, isLoggedIn, setIsLoggedIn, setEntitiesLoading]);
 }
 
 export default View;

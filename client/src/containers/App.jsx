@@ -15,6 +15,5 @@ const App = () => {
 
 export default compose(
   entitiesLoadingManager,
-
   sessionManager
 )(App);

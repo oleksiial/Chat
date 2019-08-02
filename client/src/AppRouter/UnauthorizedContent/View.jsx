@@ -3,11 +3,16 @@ import { Route, Redirect } from 'react-router-dom';
 
 import ROUTES from '../constants';
 import useSessionContext from '../../hooks/useSessionContext';
+import useEntitiesLoadingContext from '../../hooks/useEntitiesLoadingContext';
 
 const View = ({ path, component }) => {
-  const { sessionLoading, isLoggedIn } = useSessionContext();
+  const { isLoggedIn } = useSessionContext();
 
-  if (sessionLoading) return <div>Loading...</div>;
+  const {
+    entitiesLoading: { user: userLoading }
+  } = useEntitiesLoadingContext();
+
+  if (userLoading) return <div>Loading...</div>;
 
   if (isLoggedIn) return <Redirect to={ROUTES.home} />;
 

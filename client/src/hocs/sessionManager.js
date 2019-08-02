@@ -1,26 +1,20 @@
-import React from 'react';
-import { compose, withState } from 'recompose';
-
+import React, { useState } from 'react';
 import SessionContext from '../context/sessionContext';
 
-export default WrappedComponent =>
-  compose(
-    withState('sessionLoading', 'setSessionLoading', true),
+export default WrappedComponent => props => {
+  const [sessionId, setSessionId] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    withState('sessionId', 'setSessionId', undefined),
-
-    withState('isLoggedIn', 'setIsLoggedIn', false)
-  )(({ setSessionLoading, sessionLoading, sessionId, setSessionId, isLoggedIn, setIsLoggedIn }) => (
+  return (
     <SessionContext.Provider
       value={{
-        sessionLoading,
-        setSessionLoading,
         sessionId,
         setSessionId,
         isLoggedIn,
         setIsLoggedIn
       }}
     >
-      <WrappedComponent />
+      <WrappedComponent {...props} />
     </SessionContext.Provider>
-  ));
+  );
+};

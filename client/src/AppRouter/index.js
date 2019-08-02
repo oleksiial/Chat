@@ -1,5 +1,4 @@
-import { compose } from 'recompose';
-import { graphql } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 
 import View from './View';
 import { VALIDATE_SESSION } from '../requests';
