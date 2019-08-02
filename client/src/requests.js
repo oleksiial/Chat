@@ -37,6 +37,12 @@ export const SIGN_IN = gql`
   }
 `;
 
+export const SIGN_UP = gql`
+  mutation signUp($username: String!, $password: String!, $passwordConfirmation: String!) {
+    signUp(username: $username, password: $password, passwordConfirmation: $passwordConfirmation)
+  }
+`;
+
 export const SIGN_OUT = gql`
   mutation signOut {
     signOut

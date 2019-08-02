@@ -4,7 +4,7 @@ import { BrowserRouter, Redirect, Switch } from 'react-router-dom';
 import ROUTES from './constants';
 import UnauthorizedContent from './UnauthorizedContent';
 import AuthorizedContent from './AuthorizedContent';
-import SignForm from '../containers/SignForm';
+import LoginForm from '../containers/LoginForm';
 import MainPage from '../Layouts/MainPage';
 import useSessionContext from '../hooks/useSessionContext';
 import useEntitiesLoadingContext from '../hooks/useEntitiesLoadingContext';
@@ -15,7 +15,7 @@ const View = ({ sessionLoading, isLoggedIn }) => {
   return (
     <BrowserRouter>
       <Switch>
-        <UnauthorizedContent path={ROUTES.login} component={SignForm} />
+        <UnauthorizedContent path={ROUTES.login} component={LoginForm} />
 
         <AuthorizedContent path={ROUTES.home} component={MainPage} />
 
