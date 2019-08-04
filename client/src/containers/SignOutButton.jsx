@@ -16,7 +16,11 @@ const SignOutButton = ({ onSubmit, client }) => {
       .catch(e => console.log(e));
   };
 
-  return <button onClick={handleSubmit}>Sign out</button>;
+  return (
+    <button id="signOutButton" onClick={handleSubmit}>
+      Sign out
+    </button>
+  );
 };
 
 export default compose(

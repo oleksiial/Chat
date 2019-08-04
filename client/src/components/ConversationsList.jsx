@@ -4,7 +4,7 @@ import './styles.css';
 
 const ConversationsList = ({ conversations, onClick }) => {
   return (
-    <div className="conversationslist">
+    <div className="conversationsList">
       {conversations.map(conv => (
         <ConversationListItem
           key={conv.id}

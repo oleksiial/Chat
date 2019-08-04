@@ -1,27 +1,48 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
+
+.conversation--listitem:last-child {
+  border-bottom: 1px solid darkgrey;
 }
 
 .conversation--listitem {
-  margin: 5px;
   padding: 5px;
-  border: 1px solid brown;
+  border: 1px solid darkgrey;
   width: 200px;
+  border-bottom: none;
 }
 
 .messages {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  overflow: auto;
   width: 100%;
+  margin: 0 5px;
+  height: calc(100vh - 55px);
+  flex-direction: column;
+}
+
+.messageWrap {
+  display: flex;
+  margin-bottom: 5px;
 }
 
 .message {
-  margin: 5px;
-  padding: 5px;
-  border: 1px solid lightskyblue;
+  padding: 5px 15px;
+  border: 1px solid lightgrey;
 }
 
-.messageinput {
-  margin: 5px;
+.myMessage {
+  justify-content: flex-end;
+}
+
+.messageInput {
+  justify-self: end;
+  margin: 15px 0;
 }
 
 .app {

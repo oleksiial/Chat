@@ -11,7 +11,7 @@ const NewMessageInput = ({ mutate, conversationId }) => {
   };
 
   return (
-    <div className="messageinput">
+    <div className="messageInput">
       <input type="text" ref={e => (input = e)} />
       <button onClick={handleClick}>Send</button>
     </div>
