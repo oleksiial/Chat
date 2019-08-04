@@ -7,12 +7,16 @@ import Messages from '../containers/Messages';
 import { GET_ME } from '../requests';
 import SignOutButton from '../containers/SignOutButton';
 import withLastMessageSubscriptions from '../hocs/withLastMessageSubscriptions';
+import useUserIdSetter from '../hooks/useUserIdSetter';
+
+import './style.css';
 
 function MainPageLayout({ isLoading, data }) {
   const [currentConversationId, setCurrentConversationId] = useState(null);
 
-  if (isLoading) return <div>Loading...</div>;
+  useUserIdSetter((data && data.id) || null);
 
+  if (isLoading) return <div>Loading...</div>;
   const { id, username, conversations } = data;
 
   return (
@@ -22,10 +26,10 @@ function MainPageLayout({ isLoading, data }) {
         <SignOutButton />
       </header>
 
-      <content className="content">
+      <div className="content">
         <ConversationsList conversations={conversations} onClick={setCurrentConversationId} />
         {currentConversationId && <Messages conversationId={currentConversationId} />}
-      </content>
+      </div>
     </div>
   );
 }
