@@ -42,7 +42,7 @@ const apolloServer = new ApolloServer({
       const sid = webSocket.upgradeReq.headers.cookie.substring(4);
       return { sid };
     }
-  }
+  },
 });
 apolloServer.applyMiddleware({ app, cors: corsOptions });
 

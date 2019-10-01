@@ -6,7 +6,7 @@ exports.getConversations = async () => {
 };
 
 exports.getConversationById = async conversationId => {
-  const res = await query('select * from conversations where id=$1', [conversationId]);
+  const res = await query('select c.*, ct.type from conversations c join conversation_types ct on ct.id = c.type_id where c.id=$1', [conversationId]);
   return res.rows[0];
 };
 
