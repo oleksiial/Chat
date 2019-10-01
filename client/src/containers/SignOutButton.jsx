@@ -1,33 +1,14 @@
 import React from 'react';
-import { compose, graphql, withApollo } from 'react-apollo';
-import useSessionContext from '../hooks/useSessionContext';
-
+import { useMutation } from '@apollo/react-hooks';
 import { SIGN_OUT } from '../requests';
 
-const SignOutButton = ({ onSubmit, client }) => {
-  const { setSessionId, setIsLoggedIn } = useSessionContext();
-  const handleSubmit = () => {
-    onSubmit()
-      .then(() => {
-        client.cache.reset();
-        setIsLoggedIn(false);
-        setSessionId(null);
-      })
-      .catch(e => console.log(e));
-  };
+const SignOutButton = () => {
+  const [mutate, { loading, error }] = useMutation(SIGN_OUT);
 
-  return (
-    <button id="signOutButton" onClick={handleSubmit}>
-      Sign out
-    </button>
-  );
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error.</div>;
+
+  return <button type="button" onClick={mutate}>Log out</button>;
 };
 
-export default compose(
-  graphql(SIGN_OUT, {
-    props: ({ mutate }) => ({
-      onSubmit: () => mutate()
-    })
-  }),
-  withApollo
-)(SignOutButton);
+export default SignOutButton;

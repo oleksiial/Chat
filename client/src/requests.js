@@ -1,21 +1,72 @@
 import gql from 'graphql-tag';
 
-export const VALIDATE_SESSION = gql`
-  query validate {
-    validate
-  }
-`;
-
-export const GET_MESSAGES = gql`
-  query getMessages($conversationId: ID!) {
-    messages(conversationId: $conversationId) {
+export const fragmentConv = gql`
+  fragment conversation on Conversation {
+    id
+    label
+    type
+    messages {
       id
+      text
       user {
         id
       }
+    }
+    lastMessage {
+      id
       text
+      user {
+        id
+      }
     }
   }
+`;
+
+export const fragmentUser = gql`
+  fragment user on User {
+    id
+    username
+    conversations {
+      id
+      label
+      type
+      messages @client {
+        id
+        text
+        user {
+          id
+        }
+      }
+      lastMessage {
+        id
+        text
+        user {
+          id
+          username
+        }
+      }
+    }
+  }
+`;
+
+const fragmentAuthResponse = gql`
+  fragment authResponse on AuthResponse {
+      id
+      isLoggedIn
+      user {
+        ...user
+      }
+  }
+  ${fragmentUser}
+`;
+
+export const GET_CONVERSATION = gql`
+  query getConversation($conversationId: ID!) {
+    conversation(conversationId: $conversationId) {
+      ...conversation
+    }  
+  }
+  ${fragmentConv}
 `;
 
 export const NEW_MESSAGE = gql`
@@ -31,54 +82,52 @@ export const NEW_MESSAGE = gql`
   }
 `;
 
+export const AUTH_DATA = gql`
+  query authData {
+    authData {
+      ...authResponse
+    }
+  }
+  ${fragmentAuthResponse}
+`;
+
 export const SIGN_IN = gql`
   mutation signIn($username: String!, $password: String!) {
-    signIn(username: $username, password: $password)
+    signIn(username: $username, password: $password) {
+      ...authResponse
+    }
   }
+  ${fragmentAuthResponse}
 `;
 
 export const SIGN_UP = gql`
   mutation signUp($username: String!, $password: String!, $passwordConfirmation: String!) {
-    signUp(username: $username, password: $password, passwordConfirmation: $passwordConfirmation)
+    signUp(username: $username, password: $password, passwordConfirmation: $passwordConfirmation) {
+      ...authResponse
+    }
   }
+  ${fragmentAuthResponse}
 `;
 
 export const SIGN_OUT = gql`
   mutation signOut {
-    signOut
-  }
-`;
-
-export const GET_ME = gql`
-  query getUser {
-    me {
-      id
-      username
-      conversations {
-        id
-        label
-        type
-        lastMessage {
-          id
-          text
-          user {
-            id
-            username
-          }
-        }
-      }
+    signOut {
+      ...authResponse
     }
   }
+  ${fragmentAuthResponse}
 `;
 
 export const MESSAGE_SUBSCRIPTION = gql`
-  subscription($conversationId: ID!) {
-    message(conversationId: $conversationId) {
+  subscription {
+    message {
       id
       text
       user {
         id
-        username
+      }
+      conversation {
+        id
       }
     }
   }
