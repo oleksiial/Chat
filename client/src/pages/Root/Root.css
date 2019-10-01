@@ -1,0 +1,12 @@
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  background-color: aliceblue;
+}
+
+.rootWrapper {
+  display: grid;
+  grid-template-columns: 5fr 9fr;
+  grid-template-rows: 1fr;
+  column-gap: 10px;
+}

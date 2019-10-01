@@ -10,6 +10,7 @@ const ConversationListItem = ({ conversation, onConversationsListItemClick }) =>
     onClick={() => onConversationsListItemClick(conversation.id)}
   >
     <p>{conversation.label}</p>
+    {conversation.lastMessage && <p>{`Last message text: ${conversation.lastMessage.text}`}</p> }
   </div>
 );
 

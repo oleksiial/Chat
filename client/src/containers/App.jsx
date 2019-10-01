@@ -20,11 +20,13 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <Header user={user} isLoggedIn={isLoggedIn} />
-      <Switch>
-        <LoginRoute path="/login" render={() => <Login />} />
-        <ProtectedRoute path="/" render={() => <Root user={user} />} />
-      </Switch>
+      <div className="container">
+        <Header user={user} isLoggedIn={isLoggedIn} />
+        <Switch>
+          <LoginRoute path="/login" render={() => <Login />} />
+          <ProtectedRoute path="/" render={() => <Root user={user} />} />
+        </Switch>
+      </div>
     </BrowserRouter>
   );
 };
