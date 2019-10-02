@@ -1,5 +1,3 @@
-import './ConversationsList.css';
-
 import React from 'react';
 import ConversationListItem from '../ConversationListItem';
 

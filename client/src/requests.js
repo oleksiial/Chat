@@ -76,7 +76,9 @@ export const NEW_MESSAGE = gql`
       text
       user {
         id
-        username
+      }
+      conversation {
+        id
       }
     }
   }

@@ -7,10 +7,10 @@ import useMessageSubscription from '../../hooks/useMessageSubscription';
 
 const Root = ({ user }) => {
   const [currentConversationId, setCurrentConversationId] = useState(null);
-  useMessageSubscription();
+  useMessageSubscription(user.conversations.map((c) => c.id));
 
   return (
-    <div className='rootWrapper'>
+    <div className="rootWrapper">
       <ConversationsList
         conversations={user.conversations}
         onConversationsListItemClick={setCurrentConversationId}

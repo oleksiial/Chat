@@ -14,13 +14,8 @@ const useMessageSubscription = () => {
         fragment: fragmentConv,
         data: { ...prev, messages: [...prev.messages, message], lastMessage: message },
       });
-
-      console.group('onSubscriptionData');
-      console.log('message', message);
-      console.log('prev', prev);
-      console.groupEnd();
     },
   });
-}
+};
 
 export default useMessageSubscription;

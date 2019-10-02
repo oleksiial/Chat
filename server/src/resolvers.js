@@ -60,11 +60,7 @@ exports.resolvers = {
     message: {
       subscribe: withFilter(
         () => pubsub.asyncIterator(MESSAGE_SENT),
-        (payload, _, { currentUser }) => {
-          return (
-            payload.message.user_id !== currentUser.id
-          );
-        }
+        ({message}, _, { currentUser }) => message.user_id !== currentUser.id && currentUser.conversations.includes(message.conversation_id)
       )
     }
   },

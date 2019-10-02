@@ -7,6 +7,7 @@ const { resolvers } = require('./resolvers.js');
 const { typeDefs } = require('./schema.gql');
 
 const { exchangeSessionId } = require('./api/auth');
+const { getConversationsByUserId } = require('./db/conversations')
 
 const PORT = process.env.PORT || 4000;
 const corsOptions = {
@@ -26,6 +27,7 @@ const apolloServer = new ApolloServer({
     if (sessionId) {
       try {
         currentUser = await exchangeSessionId(sessionId);
+        currentUser.conversations = (await getConversationsByUserId(currentUser.id)).map(c => c.id);
       } catch (e) {
         console.warn(`Unable to authenticate using session id: ${sessionId}`, e.message);
       }
