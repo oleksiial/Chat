@@ -22,7 +22,7 @@ exports.getUserByUsername = async username => {
 };
 
 exports.getUsersByUsernameTemplate = async username => {
-  const res = await query('select id, username from users where username like $1', [username]);
+  const res = await query('select id, username from users where username like $1', [`%${username}%`]);
   return res.rows;
 };
 

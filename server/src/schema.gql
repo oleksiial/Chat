@@ -7,6 +7,7 @@ type Query {
 	conversation(conversationId: ID!): Conversation!
 	me: User!
 	authData: AuthResponse!
+	search(pattern: String!): SearchResponse!
 }
 
 type Mutation {
@@ -43,6 +44,10 @@ type AuthResponse {
 
 type Subscription {
 	message: Message!
+}
+
+type SearchResponse {
+	users: [User!]
 }
 
 type User {

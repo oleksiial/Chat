@@ -6,7 +6,7 @@ const {
   getConversationsByUserId, getConversationParticipants, getConversationById 
 } = require('./db/conversations');
 const { getMessages, getLastMessage } = require('./db/messages');
-const { getUserById, getUsers } = require('./db/users');
+const { getUserById, getUsers, getUsersByUsernameTemplate } = require('./db/users');
 
 const { signUp, signIn, signOut } = require('./api/auth');
 const { startConversation, sendMessage } = require('./api/conversations');
@@ -25,7 +25,11 @@ exports.resolvers = {
     messages: (_, { conversationId }) => getMessages(conversationId).then(res => res),
     conversation: (_, { conversationId }) => getConversationById(conversationId).then(res => res),
     me: authenticated((_, __, context) => context.currentUser),
-    authData: (_, __, { currentUser }) => ({ isLoggedIn: !!currentUser, user: currentUser, sid: null })
+    authData: (_, __, { currentUser }) => ({ isLoggedIn: !!currentUser, user: currentUser, sid: null }),
+    search: async (_, { pattern }) => {
+      const users = await getUsersByUsernameTemplate(pattern)
+      return { users };
+    },
   },
   Mutation: {
     signUp: async (_, { username, password, passwordConfirmation }, { res }) => {
