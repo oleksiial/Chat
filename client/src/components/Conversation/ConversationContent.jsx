@@ -1,21 +1,39 @@
 import React from 'react';
+import { AuthContext } from '../../contexts';
 
-const ConversationContent = ({ conversation, onSendMessage }) => (
-  <div className="conversationContent">
+const ConversationContent = ({ conversation, onSendMessage }) => {
+  const user = React.useContext(AuthContext);
+  const inputRef = React.createRef();
 
-    <div className="messages">
-      <div className="forReversingItsContent">
-        {conversation.messages.map((message) => (
-          <p className="message" key={message.id}>
-            {`${message.id}: ${message.text}`}
-          </p>
-        ))}
+  const handleSend = () => {
+    onSendMessage(conversation.id, inputRef.current.value);
+    inputRef.current.value = '';
+  };
+
+  const handlePressEnter = (e) => {
+    if (e.key === 'Enter') {
+      handleSend();
+    }
+  };
+
+  return (
+    <div className="conversationContent">
+
+      <div className="messages">
+        <div className="messagesInnerWrapper">
+          {conversation.messages.map((message) => (
+            <p className={`message${user.id === message.user.id ? ' own' : ''}`} key={message.id}>
+              {`${message.id}: ${message.text}`}
+            </p>
+          ))}
+        </div>
+      </div>
+      <div className="sendField">
+        <input type="text" ref={inputRef} onKeyPress={handlePressEnter} />
+        <button type="button" className="sendButton" onClick={handleSend}>send</button>
       </div>
     </div>
-    <div className="sendButton">
-      <button type="button" onClick={() => onSendMessage(conversation.id, 'new message text')}>send</button>
-    </div>
-  </div>
-);
+  );
+};
 
 export default ConversationContent;
