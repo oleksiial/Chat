@@ -1,24 +1,15 @@
 import React from 'react';
 
 import useSendMessage from '../../hooks/useSendMessage';
+import ConversationHeader from './ConversationHeader';
+import ConversationContent from './ConversationContent';
 
 const Conversation = ({ conversation }) => {
-  const { sendMessage, loading } = useSendMessage();
+  const { sendMessage } = useSendMessage();
   return (
     <div className="conversationWrapper">
-      <div className="conversationHeader">
-        <p>{conversation.label}</p>
-        {conversation.lastMessage && <p>{`Last message id: ${conversation.lastMessage.id}`}</p>}
-        <p>{`${conversation.messages.length} messages`}</p>
-      </div>
-      <div className="conversationContent">
-        <button type="button" onClick={() => sendMessage(conversation.id, 'new message text')}>send</button>
-        {conversation.messages.map((message) => (
-          <p key={message.id}>
-            {`${message.id}: ${message.text}`}
-          </p>
-        ))}
-      </div>
+      <ConversationHeader conversation={conversation} onSendMessage={sendMessage} />
+      <ConversationContent conversation={conversation} onSendMessage={sendMessage} />
     </div>
   );
 };

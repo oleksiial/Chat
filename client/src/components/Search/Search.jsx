@@ -3,9 +3,7 @@ import useSearch from '../../hooks/useSearch';
 
 const Search = ({ onData }) => {
   const inputRef = useRef(null);
-  const {
-    search, data, loading, error,
-  } = useSearch();
+  const { search, data } = useSearch();
 
   if (data && inputRef.current.value) {
     onData(data.search);
