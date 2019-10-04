@@ -1,9 +1,9 @@
 import './Root.css';
 
 import React, { useState } from 'react';
-import ConversationsList from '../../components/ConversationsList/ConversationsList';
 import ConversationContainer from '../../containers/ConversationContainer';
 import useMessageSubscription from '../../hooks/useMessageSubscription';
+import Nav from '../../components/Nav';
 
 const Root = ({ user }) => {
   const [currentConversationId, setCurrentConversationId] = useState(null);
@@ -11,11 +11,10 @@ const Root = ({ user }) => {
 
   return (
     <div className="rootWrapper">
-      <ConversationsList
-        conversations={user.conversations}
-        onConversationsListItemClick={setCurrentConversationId}
-      />
-      {currentConversationId && <ConversationContainer conversationId={currentConversationId} />}
+      <Nav onConversationsListItemClick={setCurrentConversationId} conversations={user.conversations} />
+      {currentConversationId
+        ? <ConversationContainer conversationId={currentConversationId} />
+        : <div className="logo">qwe</div>}
     </div>
   );
 };

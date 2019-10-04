@@ -69,6 +69,17 @@ export const GET_CONVERSATION = gql`
   ${fragmentConv}
 `;
 
+export const SEARCH = gql`
+  query getConversation($pattern: String!) {
+    search(pattern: $pattern) {
+      users {
+        id
+        username
+      }
+    }  
+  }
+`;
+
 export const NEW_MESSAGE = gql`
   mutation sendMessage($conversationId: ID!, $text: String!) {
     sendMessage(conversationId: $conversationId, text: $text) {
