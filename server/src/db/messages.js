@@ -7,7 +7,7 @@ exports.getMessages = async conversationId => {
 
 exports.getLastMessage = async conversationId => {
   const res = await query(
-    'select * from messages where conversation_id=$1 order by created_at desc limit 1',
+    'select * from messages where conversation_id=$1 order by id desc limit 1',
     [conversationId]
   );
   return res.rows[0];

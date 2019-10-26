@@ -1,18 +1,44 @@
 import React, { useState } from 'react';
-import Search from '../Search/Search';
-import ConversationsList from '../ConversationsList/ConversationsList';
+import ConversationsList from './ConversationsList';
 
-const Nav = ({ conversations, onConversationsListItemClick }) => {
-  const [searchResults, setSearchResults] = useState(null);
+import useStartConversation from '../../hooks/useStartConversation';
+import useSearch from '../../hooks/useSearch';
+import SearchList from './SearchList';
+
+const Nav = ({ conversations, onConversationsListItemClick, currentConversationId }) => {
+  const [input, setInput] = useState('');
+  const { search, data } = useSearch();
+  const { startConversation } = useStartConversation();
+
+  const handleSearchListItemClick = (userId) => {
+    startConversation(userId);
+    setInput('');
+  };
+
   return (
     <div className="nav">
-      <Search onData={setSearchResults} />
-      {searchResults
-        ? <div>{searchResults.users.map((u) => <p key={u.id}>{u.username}</p>)}</div>
+      <input
+        className="searchInput"
+        type="text"
+        value={input}
+        onChange={(e) => {
+          setInput(e.target.value);
+          search(e.target.value);
+        }}
+      />
+      {data && input
+        ? (
+          <SearchList
+            data={data}
+            onSearchListItemClick={handleSearchListItemClick}
+            conversations={conversations}
+          />
+        )
         : (
           <ConversationsList
             conversations={conversations}
             onConversationsListItemClick={onConversationsListItemClick}
+            currentConversationId={currentConversationId}
           />
         )}
     </div>

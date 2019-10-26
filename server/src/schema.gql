@@ -26,7 +26,7 @@ type Mutation {
 
 	startConversation(
 		userId: ID!
-		label: String!
+		label: String
 	): Conversation!
 
 	sendMessage(
@@ -44,6 +44,7 @@ type AuthResponse {
 
 type Subscription {
 	message: Message!
+	newConversation: Conversation!
 }
 
 type SearchResponse {

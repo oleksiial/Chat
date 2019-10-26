@@ -27,7 +27,6 @@ const apolloServer = new ApolloServer({
     if (sessionId) {
       try {
         currentUser = await exchangeSessionId(sessionId);
-        currentUser.conversations = (await getConversationsByUserId(currentUser.id)).map(c => c.id);
       } catch (e) {
         console.warn(`Unable to authenticate using session id: ${sessionId}`, e.message);
       }

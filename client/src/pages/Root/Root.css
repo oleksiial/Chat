@@ -19,9 +19,19 @@
 
 .header {
   grid-area: header;
-  background-color: lightskyblue;
   width: 100%;
   height: 100%;
+}
+
+.headerWrapper {
+  background-color: lightskyblue;
+  box-sizing: border-box;
+  width: inherit;
+  height: inherit;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
 }
 
 .nav {
@@ -82,13 +92,40 @@
   display: flex;
   flex-direction: column-reverse;
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .messagesInnerWrapper {
-  margin: 25px;
+  margin: 10px;
   display: flex;
   flex-direction: column;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-track:hover {
+  background: #4c4;
+  opacity: 0.5;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #484;
+  opacity: 0.5;
+  border-radius: 4px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #464;
 }
 
 /* .message::after {
@@ -116,7 +153,7 @@
   width: -moz-fit-content;
 }
 
-.own {
+.message.own {
   align-self: flex-end;
 }
 
@@ -125,7 +162,7 @@
   display: flex;
 }
 
-.sendField > input {
+.searchInput, .sendField > input {
   border: solid 1px darkgray;
   border-radius: 5px;
   padding: 7px;
@@ -139,6 +176,25 @@
   border: none;
   background-color: yellow;
   border-radius: 35%;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.searchList, .conversationsList {
+  display: flex;
+  flex-direction: column;
+}
+
+.searchListItem, .conversationListItem {
+  border-bottom: 2px solid lightcyan;
+  padding: 10px 5px;
+}
+
+.searchListItem.active, .conversationListItem.active {
+  background-color: darkseagreen;
 }
 
 /* @media (max-width: 767px) {

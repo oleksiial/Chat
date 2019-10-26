@@ -9,7 +9,6 @@ import Header from '../components/Header/Header';
 
 import LoginRoute from '../routes/LoginRoute';
 import ProtectedRoute from '../routes/ProtectedRoute';
-import { AuthContext } from '../contexts';
 
 const App = () => {
   const { loading, error, data } = useQuery(AUTH_DATA);
@@ -20,17 +19,15 @@ const App = () => {
   const { user, isLoggedIn } = data.authData;
 
   return (
-    <AuthContext.Provider value={user}>
-      <BrowserRouter>
-        <div className="container">
-          <Header user={user} isLoggedIn={isLoggedIn} />
-          <Switch>
-            <LoginRoute path="/login" render={() => <Login />} />
-            <ProtectedRoute path="/" render={() => <Root user={user} />} />
-          </Switch>
-        </div>
-      </BrowserRouter>
-    </AuthContext.Provider>
+    <BrowserRouter>
+      <div className="container">
+        <Header user={user} isLoggedIn={isLoggedIn} />
+        <Switch>
+          <LoginRoute path="/login" render={() => <Login />} />
+          <ProtectedRoute path="/" render={() => <Root user={user} />} />
+        </Switch>
+      </div>
+    </BrowserRouter>
   );
 };
 

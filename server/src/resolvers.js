@@ -1,9 +1,10 @@
 const { PubSub, withFilter } = require('graphql-subscriptions');
 const pubsub = new PubSub();
 const MESSAGE_SENT = 'MESSAGE_SENT';
+const NEW_CONVERSATION = 'NEW_CONVERSATION';
 
-const { 
-  getConversationsByUserId, getConversationParticipants, getConversationById 
+const {
+  getConversationsByUserId, getConversationParticipants, getConversationById
 } = require('./db/conversations');
 const { getMessages, getLastMessage } = require('./db/messages');
 const { getUserById, getUsers, getUsersByUsernameTemplate } = require('./db/users');
@@ -26,10 +27,10 @@ exports.resolvers = {
     conversation: (_, { conversationId }) => getConversationById(conversationId).then(res => res),
     me: authenticated((_, __, context) => context.currentUser),
     authData: (_, __, { currentUser }) => ({ isLoggedIn: !!currentUser, user: currentUser, sid: null }),
-    search: async (_, { pattern }) => {
+    search: authenticated(async (_, { pattern }, { currentUser }) => {
       const users = await getUsersByUsernameTemplate(pattern)
-      return { users };
-    },
+      return { users: users.filter(user => user.id !== currentUser.id) };
+    }),
   },
   Mutation: {
     signUp: async (_, { username, password, passwordConfirmation }, { res }) => {
@@ -47,11 +48,18 @@ exports.resolvers = {
       res.clearCookie('sid');
       return { isLoggedIn: !authRes, user: null, sid: null }
     }),
-    startConversation: authenticated(async (_, { userId, label }, { currentUser }) => {
-      const conversation = await startConversation(currentUser.id, userId, label);
+    startConversation: authenticated(async (_, { userId }, { currentUser }) => {
+      const conversation = await startConversation(currentUser.id, userId, userId);
+      pubsub.publish(NEW_CONVERSATION, {
+        newConversation: conversation
+      });
       return conversation;
     }),
     sendMessage: authenticated(async (_, { conversationId, text }, { currentUser }) => {
+      if (text.trim() === '') {
+        throw new Error('message text is empty')
+      }
+
       const message = await sendMessage(currentUser.id, conversationId, text);
       pubsub.publish(MESSAGE_SENT, {
         message,
@@ -64,8 +72,14 @@ exports.resolvers = {
     message: {
       subscribe: withFilter(
         () => pubsub.asyncIterator(MESSAGE_SENT),
-        ({message}, _, { currentUser }) => message.user_id !== currentUser.id && currentUser.conversations.includes(message.conversation_id)
+        async ({ message }, _, { currentUser }) => {
+          const conversations = await getConversationsByUserId(currentUser.id);
+          return message.user_id !== currentUser.id && conversations.map(c => c.id).includes(message.conversation_id)
+        }
       )
+    },
+    newConversation: {
+      subscribe: () => pubsub.asyncIterator(NEW_CONVERSATION)
     }
   },
   AuthResponse: {

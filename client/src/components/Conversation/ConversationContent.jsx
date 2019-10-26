@@ -1,8 +1,8 @@
 import React from 'react';
-import { AuthContext } from '../../contexts';
+import useAuth from '../../hooks/useAuth';
 
 const ConversationContent = ({ conversation, onSendMessage }) => {
-  const user = React.useContext(AuthContext);
+  const user = useAuth();
   const inputRef = React.createRef();
 
   const handleSend = () => {

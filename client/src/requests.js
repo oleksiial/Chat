@@ -42,7 +42,6 @@ export const fragmentUser = gql`
         text
         user {
           id
-          username
         }
       }
     }
@@ -129,6 +128,24 @@ export const SIGN_OUT = gql`
     }
   }
   ${fragmentAuthResponse}
+`;
+
+export const START_CONVERSATION = gql`
+  mutation startConversation($userId: ID!) {
+    startConversation(userId: $userId) {
+      ...conversation
+    }
+  }
+  ${fragmentConv}
+`;
+
+export const NEW_CONVERSATION_SUBSCRIPTION = gql`
+  subscription newConversation {
+    newConversation {
+      ...conversation
+    }
+  }
+  ${fragmentConv}
 `;
 
 export const MESSAGE_SUBSCRIPTION = gql`

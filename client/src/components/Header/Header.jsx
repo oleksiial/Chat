@@ -3,8 +3,10 @@ import SignOutButton from '../../containers/SignOutButton';
 
 const Header = ({ user }) => (
   <div className="header">
-    {user && <SignOutButton />}
-    {user && <p>{user.username}</p>}
+    <div className="headerWrapper">
+      {user && <p>{user.username}</p>}
+      {user && <SignOutButton />}
+    </div>
   </div>
 );
 
