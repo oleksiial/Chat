@@ -60,9 +60,9 @@ type User {
 type Conversation {
 	id: ID!
 	type: String!
-	label: String!
 	users: [User!]!
 	messages: [Message!]!
+	label: String
 	lastMessage: Message
 }
 

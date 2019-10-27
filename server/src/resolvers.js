@@ -26,7 +26,7 @@ exports.resolvers = {
     messages: (_, { conversationId }) => getMessages(conversationId).then(res => res),
     conversation: (_, { conversationId }) => getConversationById(conversationId).then(res => res),
     me: authenticated((_, __, context) => context.currentUser),
-    authData: (_, __, { currentUser }) => ({ isLoggedIn: !!currentUser, user: currentUser, sid: null }),
+    authData: (_, __, { sessionId, currentUser }) => ({ isLoggedIn: !!currentUser, user: currentUser, sid: sessionId }),
     search: authenticated(async (_, { pattern }, { currentUser }) => {
       const users = await getUsersByUsernameTemplate(pattern)
       return { users: users.filter(user => user.id !== currentUser.id) };
@@ -49,10 +49,8 @@ exports.resolvers = {
       return { isLoggedIn: !authRes, user: null, sid: null }
     }),
     startConversation: authenticated(async (_, { userId }, { currentUser }) => {
-      const conversation = await startConversation(currentUser.id, userId, userId);
-      pubsub.publish(NEW_CONVERSATION, {
-        newConversation: conversation
-      });
+      const conversation = await startConversation(currentUser.id, userId);
+      pubsub.publish(NEW_CONVERSATION, { newConversation: conversation });
       return conversation;
     }),
     sendMessage: authenticated(async (_, { conversationId, text }, { currentUser }) => {

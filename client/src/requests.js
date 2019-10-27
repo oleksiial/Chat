@@ -5,6 +5,10 @@ export const fragmentConv = gql`
     id
     label
     type
+    users {
+      id
+      username
+    }
     messages {
       id
       text
@@ -30,6 +34,10 @@ export const fragmentUser = gql`
       id
       label
       type
+      users {
+        id
+        username
+      }
       messages @client {
         id
         text
@@ -52,6 +60,7 @@ const fragmentAuthResponse = gql`
   fragment authResponse on AuthResponse {
       id
       isLoggedIn
+      sid
       user {
         ...user
       }
@@ -149,7 +158,7 @@ export const NEW_CONVERSATION_SUBSCRIPTION = gql`
 `;
 
 export const MESSAGE_SUBSCRIPTION = gql`
-  subscription {
+  subscription message {
     message {
       id
       text

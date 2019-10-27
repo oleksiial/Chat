@@ -23,7 +23,7 @@ CREATE TABLE conversation_types (
 CREATE TABLE conversations (
     id BIGSERIAL PRIMARY KEY,
     type_id SMALLINT NOT NULL references conversation_types(id),
-    label varchar(50) NOT NULL,
+    label varchar(50), -- let label be null for private conversations
     created_at INT DEFAULT ceil(extract(epoch from now()))    
 );
 
@@ -33,7 +33,6 @@ CREATE TABLE messages (
     conversation_id BIGINT NOT NULL references conversations(id),
     text varchar(500) NOT NULL,
     created_at INT DEFAULT ceil(extract(epoch from now()))
-
 );
 
 CREATE TABLE user_conversation (
@@ -45,22 +44,3 @@ CREATE TABLE user_conversation (
 
 INSERT INTO public.conversation_types(type) VALUES ('private');
 INSERT INTO public.conversation_types(type) VALUES ('group');
-
--- INSERT INTO public.users(username, password_hash) VALUES ('A', '1');
--- INSERT INTO public.users(username, password_hash) VALUES ('B', '2');
--- INSERT INTO public.users(username, password_hash) VALUES ('C', '3');
--- INSERT INTO public.users(username, password_hash) VALUES ('D', '4');
--- INSERT INTO public.users(username, password_hash) VALUES ('E', '5');
-
-
--- INSERT INTO public.conversations(type_id, label) VALUES (1, 'A TO B');
--- INSERT INTO public.conversations(type_id, label) VALUES (2, 'ROOM 1');
--- INSERT INTO public.conversations(type_id, label) VALUES (2, 'ROOM 2');
-
--- INSERT INTO public.user_conversation(user_id, conversation_id) VALUES (1, 1);
--- INSERT INTO public.user_conversation(user_id, conversation_id) VALUES (2, 1);
-
--- INSERT INTO public.user_conversation(user_id, conversation_id) VALUES (1, 2);
--- INSERT INTO public.user_conversation(user_id, conversation_id) VALUES (2, 2);
--- INSERT INTO public.user_conversation(user_id, conversation_id) VALUES (3, 2);
-

@@ -1,9 +1,14 @@
 import React from 'react';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useApolloClient } from '@apollo/react-hooks';
 import { SIGN_OUT } from '../requests';
 
 const SignOutButton = () => {
-  const [mutate, { loading, error }] = useMutation(SIGN_OUT);
+  const client = useApolloClient();
+  const [mutate, { loading, error }] = useMutation(SIGN_OUT, {
+    update: () => {
+      client.resetStore();
+    }
+  });
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error.</div>;

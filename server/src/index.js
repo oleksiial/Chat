@@ -22,7 +22,7 @@ const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
   context: async ({ req, res, connection }) => {
-    const sessionId = req ? req.cookies.sid : connection.context.sid;
+    const sessionId = req ? req.cookies.sid : connection.variables.sid;
     let currentUser = null;
     if (sessionId) {
       try {
@@ -37,13 +37,7 @@ const apolloServer = new ApolloServer({
       currentUser,
       res
     };
-  },
-  subscriptions: {
-    onConnect: (connectionParams, webSocket) => {
-      const sid = webSocket.upgradeReq.headers.cookie.substring(4);
-      return { sid };
-    }
-  },
+  }
 });
 apolloServer.applyMiddleware({ app, cors: corsOptions });
 

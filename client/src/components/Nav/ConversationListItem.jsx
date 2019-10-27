@@ -4,7 +4,7 @@ import React from 'react';
 import useAuth from '../../hooks/useAuth';
 
 const ConversationListItem = ({ conversation, onConversationsListItemClick, currentConversationId }) => {
-  const { id } = useAuth();
+  const { user: { id } } = useAuth();
 
   return (
     <div

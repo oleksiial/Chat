@@ -2,7 +2,7 @@ import React from 'react';
 import useAuth from '../../hooks/useAuth';
 
 const ConversationContent = ({ conversation, onSendMessage }) => {
-  const user = useAuth();
+  const { user: { id } } = useAuth();
   const inputRef = React.createRef();
 
   const handleSend = () => {
@@ -22,7 +22,7 @@ const ConversationContent = ({ conversation, onSendMessage }) => {
       <div className="messages">
         <div className="messagesInnerWrapper">
           {conversation.messages.map((message) => (
-            <p className={`message${user.id === message.user.id ? ' own' : ''}`} key={message.id}>
+            <p className={`message${id === message.user.id ? ' own' : ''}`} key={message.id}>
               {`${message.id}: ${message.text}`}
             </p>
           ))}

@@ -5,11 +5,13 @@ import ConversationContainer from '../../containers/ConversationContainer';
 import useMessageSubscription from '../../hooks/useMessageSubscription';
 import Nav from '../../components/Nav';
 import useNewConversationSubscription from '../../hooks/useNewConversationSubscription';
+import useConversationLabel from '../../hooks/useConversationLabel';
 
 const Root = ({ user }) => {
   const [currentConversationId, setCurrentConversationId] = useState(null);
   useMessageSubscription(user.conversations.map((c) => c.id));
   useNewConversationSubscription();
+  useConversationLabel();
 
   return (
     <div className="rootWrapper">
