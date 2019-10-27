@@ -1,11 +1,11 @@
 import React from 'react';
 import SignOutButton from '../../containers/SignOutButton';
 
-const Header = ({ user }) => (
+const Header = ({ id, username }) => (
   <div className="header">
     <div className="headerWrapper">
-      {user && <p>{user.username}</p>}
-      {user && <SignOutButton />}
+      <p>{`${id}: ${username}`}</p>
+      <SignOutButton />
     </div>
   </div>
 );

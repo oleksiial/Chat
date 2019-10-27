@@ -1,7 +1,9 @@
 import React from 'react';
 import ConversationListItem from './ConversationListItem';
 
-const ConversationsList = ({ conversations, onConversationsListItemClick, currentConversationId }) => (
+const ConversationsList = ({
+  conversations, onConversationsListItemClick, currentConversationId, currentUserId,
+}) => (
   <div className="conversationsList">
     {conversations.map((conversation) => (
       <ConversationListItem
@@ -9,6 +11,7 @@ const ConversationsList = ({ conversations, onConversationsListItemClick, curren
         conversation={conversation}
         onConversationsListItemClick={onConversationsListItemClick}
         currentConversationId={currentConversationId}
+        currentUserId={currentUserId}
       />
     ))}
   </div>

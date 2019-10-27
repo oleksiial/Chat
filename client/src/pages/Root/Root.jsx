@@ -3,26 +3,27 @@ import './Root.css';
 import React, { useState } from 'react';
 import ConversationContainer from '../../containers/ConversationContainer';
 import useMessageSubscription from '../../hooks/useMessageSubscription';
-import Nav from '../../components/Nav';
 import useNewConversationSubscription from '../../hooks/useNewConversationSubscription';
 import useConversationLabel from '../../hooks/useConversationLabel';
+import NavContainer from '../../containers/NavContainer';
+import HeaderContainer from '../../containers/HeaderContainer';
 
-const Root = ({ user }) => {
+const Root = () => {
   const [currentConversationId, setCurrentConversationId] = useState(null);
-  useMessageSubscription(user.conversations.map((c) => c.id));
+  useMessageSubscription();
   useNewConversationSubscription();
   useConversationLabel();
 
   return (
     <div className="rootWrapper">
-      <Nav
+      <HeaderContainer />
+      <NavContainer
         onConversationsListItemClick={setCurrentConversationId}
-        conversations={user.conversations}
         currentConversationId={currentConversationId}
       />
       {currentConversationId
         ? <ConversationContainer conversationId={currentConversationId} />
-        : <div className="logo">qwe</div>}
+        : <div className="logo">Logo</div>}
     </div>
   );
 };

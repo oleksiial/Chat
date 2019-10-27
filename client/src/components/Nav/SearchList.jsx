@@ -8,7 +8,7 @@ const SearchList = ({ data, onSearchListItemClick, conversations }) => (
         key={user.id}
         user={user}
         onClick={onSearchListItemClick}
-        conversationExists={!!conversations.find((conv) => conv.users.find(u => u.id === user.id))}
+        conversationExists={!!conversations.find((conv) => conv.users.find((u) => u.id === user.id))}
       />
     ))}
   </div>

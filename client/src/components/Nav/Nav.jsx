@@ -5,7 +5,9 @@ import useStartConversation from '../../hooks/useStartConversation';
 import useSearch from '../../hooks/useSearch';
 import SearchList from './SearchList';
 
-const Nav = ({ conversations, onConversationsListItemClick, currentConversationId }) => {
+const Nav = ({
+  conversations, onConversationsListItemClick, currentConversationId, currentUserId,
+}) => {
   const [input, setInput] = useState('');
   const { search, data } = useSearch();
   const { startConversation } = useStartConversation();
@@ -39,6 +41,7 @@ const Nav = ({ conversations, onConversationsListItemClick, currentConversationI
             conversations={conversations}
             onConversationsListItemClick={onConversationsListItemClick}
             currentConversationId={currentConversationId}
+            currentUserId={currentUserId}
           />
         )}
     </div>

@@ -1,19 +1,13 @@
 import React from 'react';
-import { useMutation, useApolloClient } from '@apollo/react-hooks';
-import { SIGN_OUT } from '../requests';
+import useSignOut from '../hooks/useSignOut';
 
 const SignOutButton = () => {
-  const client = useApolloClient();
-  const [mutate, { loading, error }] = useMutation(SIGN_OUT, {
-    update: () => {
-      client.resetStore();
-    }
-  });
+  const { signOut, loading, error } = useSignOut();
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error.</div>;
 
-  return <button type="button" onClick={mutate}>Log out</button>;
+  return <button type="button" onClick={signOut}>Log out</button>;
 };
 
 export default SignOutButton;
