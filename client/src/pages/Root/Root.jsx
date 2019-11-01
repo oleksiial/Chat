@@ -7,12 +7,17 @@ import useNewConversationSubscription from '../../hooks/useNewConversationSubscr
 import useConversationLabel from '../../hooks/useConversationLabel';
 import NavContainer from '../../containers/NavContainer';
 import HeaderContainer from '../../containers/HeaderContainer';
+import FakeConversationContainer from '../../containers/FakeConversationContainer';
 
 const Root = () => {
   const [currentConversationId, setCurrentConversationId] = useState(null);
   useMessageSubscription();
   useNewConversationSubscription();
   useConversationLabel();
+
+  const ConvContainer = currentConversationId < 0
+    ? FakeConversationContainer
+    : ConversationContainer;
 
   return (
     <div className="rootWrapper">
@@ -21,8 +26,8 @@ const Root = () => {
         onConversationsListItemClick={setCurrentConversationId}
         currentConversationId={currentConversationId}
       />
-      {currentConversationId
-        ? <ConversationContainer conversationId={currentConversationId} />
+      {currentConversationId !== null
+        ? <ConvContainer conversationId={currentConversationId} setCurrentConversationId={setCurrentConversationId} />
         : <div className="logo">Logo</div>}
     </div>
   );

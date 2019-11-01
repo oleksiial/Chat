@@ -27,6 +27,11 @@ type Mutation {
 	startConversation(
 		userId: ID!
 		label: String
+		message: String
+	): Conversation!
+
+	createGroup(
+		label: String!
 	): Conversation!
 
 	sendMessage(

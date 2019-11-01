@@ -10,7 +10,7 @@ const { getMessages, getLastMessage } = require('./db/messages');
 const { getUserById, getUsers, getUsersByUsernameTemplate } = require('./db/users');
 
 const { signUp, signIn, signOut } = require('./api/auth');
-const { startConversation, sendMessage } = require('./api/conversations');
+const { startConversation, createGroup, sendMessage } = require('./api/conversations');
 
 const authenticated = next => (root, args, context, info) => {
   if (!context.currentUser) {
@@ -48,8 +48,16 @@ exports.resolvers = {
       res.clearCookie('sid');
       return { isLoggedIn: !authRes, user: null, sid: null }
     }),
-    startConversation: authenticated(async (_, { userId }, { currentUser }) => {
+    startConversation: authenticated(async (_, { userId, message }, { currentUser }) => {
       const conversation = await startConversation(currentUser.id, userId);
+      if (message) {
+        await sendMessage(currentUser.id, conversation.id, message);
+      }
+      pubsub.publish(NEW_CONVERSATION, { newConversation: conversation });
+      return conversation;
+    }),
+    createGroup: authenticated(async (_, { label }, { currentUser }) => {
+      const conversation = await createGroup(currentUser.id, label);
       pubsub.publish(NEW_CONVERSATION, { newConversation: conversation });
       return conversation;
     }),

@@ -6,16 +6,15 @@ import useSearch from '../../hooks/useSearch';
 import SearchList from './SearchList';
 
 const Nav = ({
-  conversations, onConversationsListItemClick, currentConversationId, currentUserId,
+  conversations,
+  onConversationsListItemClick,
+  currentConversationId,
+  currentUserId,
+  onSearchItemClick,
 }) => {
   const [input, setInput] = useState('');
   const { search, data } = useSearch();
   const { startConversation } = useStartConversation();
-
-  const handleSearchListItemClick = (userId) => {
-    startConversation(userId);
-    setInput('');
-  };
 
   return (
     <div className="nav">
@@ -32,8 +31,10 @@ const Nav = ({
         ? (
           <SearchList
             data={data}
-            onSearchListItemClick={handleSearchListItemClick}
+            onSearchListItemClick={onSearchItemClick}
+            onConversationsListItemClick={onConversationsListItemClick}
             conversations={conversations}
+            currentConversationId={currentConversationId}
           />
         )
         : (

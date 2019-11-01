@@ -11,6 +11,12 @@ const startConversation = async (userId1, userId2) => {
   return conversation;
 };
 
+const createGroup = async (ownerId, label) => {
+  const conversation = await createConversation(2, label); // typeId = 1 : private, label is null
+  await joinConversation(ownerId, conversation.id);
+  return conversation;
+};
+
 const sendMessage = async (userId, conversationId, text) => {
   if (!checkParticipant(userId, conversationId)) {
     throw new Error('User is not a participant of the conversation');
@@ -21,5 +27,6 @@ const sendMessage = async (userId, conversationId, text) => {
 
 module.exports = {
   startConversation,
+  createGroup,
   sendMessage
 };

@@ -140,8 +140,8 @@ export const SIGN_OUT = gql`
 `;
 
 export const START_CONVERSATION = gql`
-  mutation startConversation($userId: ID!) {
-    startConversation(userId: $userId) {
+  mutation startConversation($userId: ID!, $message: String) {
+    startConversation(userId: $userId, message: $message) {
       ...conversation
     }
   }

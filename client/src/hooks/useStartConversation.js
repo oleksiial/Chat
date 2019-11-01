@@ -4,7 +4,7 @@ import { START_CONVERSATION } from '../requests';
 const useStartConversation = () => {
   const [startConversation, { loading, error, data }] = useMutation(START_CONVERSATION);
   return {
-    startConversation: (userId) => startConversation({ variables: { userId } }),
+    startConversation: (userId, message) => startConversation({ variables: { userId, message } }),
     loading,
     error,
     data,
