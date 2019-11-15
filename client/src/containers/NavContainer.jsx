@@ -1,53 +1,32 @@
 import React from 'react';
-import { useApolloClient } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks';
 
 import Nav from '../components/Nav';
 import useAuth from '../hooks/useAuth';
-import { fragmentUser } from '../requests';
+import { CREATE_FAKE_CONVERSATION } from '../requests';
 
 const NavContainer = ({ currentConversationId, onConversationsListItemClick }) => {
-  const { user: { id, conversations } } = useAuth();
-  const client = useApolloClient();
+  const { user: { id: currentUserId, conversations } } = useAuth();
+  const [createFakeConversation] = useMutation(CREATE_FAKE_CONVERSATION);
 
-  const handleSearchItemClick = (user) => {
-    const prev = client.readFragment({
-      id: `User:${id}`,
-      fragment: fragmentUser,
-    });
+  const handleSearchUserItemClick = (selectedUser) => {
+    createFakeConversation({ variables: { selectedUser } }).then(
+      ({ data: { createFakeConversation: { id } } }) => onConversationsListItemClick(id),
+    );
+  };
 
-    const newConversationId = Math.min(...prev.conversations.map((conv) => conv.id), 0) - 1;
-    const newConversation = {
-      id: newConversationId,
-      label: user.username,
-      type: 'private',
-      messages: [],
-      lastMessage: null,
-      users: [user],
-      __typename: 'Conversation',
-    };
-
-    client.writeFragment({
-      id: `User:${id}`,
-      fragment: fragmentUser,
-      data: {
-        ...prev,
-        conversations: [
-          ...prev.conversations,
-          newConversation,
-        ],
-      },
-    });
-
-    onConversationsListItemClick(newConversationId);
+  const handleSearchConversationItemClick = (convId) => {
+    onConversationsListItemClick(convId);
   };
 
   return (
     <Nav
-      onConversationsListItemClick={onConversationsListItemClick}
       conversations={conversations}
+      currentUserId={currentUserId}
       currentConversationId={currentConversationId}
-      currentUserId={id}
-      onSearchItemClick={handleSearchItemClick}
+      onConversationsListItemClick={onConversationsListItemClick}
+      onSearchUserItemClick={handleSearchUserItemClick}
+      onSearchConversationItemClick={handleSearchConversationItemClick}
     />
   );
 };

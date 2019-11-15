@@ -6,23 +6,22 @@ import { fragmentConv } from '../requests';
 import useStartConversation from '../hooks/useStartConversation';
 
 const FakeConversationContainer = ({ conversationId, setCurrentConversationId }) => {
-  const { startConversation, data } = useStartConversation();
-
-  if (data) {
-    setCurrentConversationId(data.startConversation.id);
-  }
-
+  const { startConversation } = useStartConversation();
   const client = useApolloClient();
   const conversation = client.readFragment({
     id: `Conversation:${conversationId}`,
     fragment: fragmentConv,
   });
 
+  console.log('render fake');
+
   return (
     <Conversation
       conversation={conversation}
       onSendMessage={(_, message) => {
-        startConversation(conversation.users[0].id, message);
+        startConversation(conversation.users[0].id, message).then(
+          ({ data: { startConversation: { id } } }) => setCurrentConversationId(() => id),
+        );
       }}
     />
   );

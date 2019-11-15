@@ -15,6 +15,7 @@ import { getMainDefinition } from 'apollo-utilities';
 
 import * as serviceWorker from './serviceWorker';
 import App from './containers/App';
+import { fragmentUser, AUTH_DATA, fragmentConv } from './requests';
 
 // Create an http link:
 const httpLink = new HttpLink({
@@ -45,8 +46,51 @@ const link = split(
 const cache = new InMemoryCache();
 const client = new ApolloClient({
   resolvers: {
+    Mutation: {
+      createFakeConversation: (_, { selectedUser }, { client: apolloClient }) => {
+        const newConversation = {
+          id: -1,
+          label: selectedUser.username,
+          type: 'private',
+          messages: [],
+          lastMessage: null,
+          users: [selectedUser],
+          __typename: 'Conversation',
+        };
+
+        const { authData } = apolloClient.readQuery({ query: AUTH_DATA });
+        apolloClient.writeQuery({
+          query: AUTH_DATA,
+          data: {
+            authData: {
+              ...authData,
+              user: {
+                ...authData.user,
+                conversations: [
+                  ...authData.user.conversations.filter((conv) => conv.id !== -1),
+                  newConversation,
+                ],
+              },
+            },
+          },
+        });
+
+        return newConversation;
+      },
+    },
+    Query: {
+      search: ({ search: { users } }, { pattern }) => {
+        const { authData: { user: { conversations } } } = client.readQuery({ query: AUTH_DATA });
+        const filteredConversations = conversations.filter((conv) => conv.label.includes(pattern));
+        const filteredUsers = users.filter(
+          (user) => !conversations.find((conv) => conv.label === user.username),
+        );
+        return { conversations: filteredConversations, filteredUsers };
+      },
+    },
     Conversation: {
-      messages: (obj) => [obj.lastMessage],
+      label: (obj) => obj.users[obj.users.length - 1].username,
+      messages: (obj) => (obj.lastMessage === null ? [] : [obj.lastMessage]),
     },
   },
   link: ApolloLink.from([

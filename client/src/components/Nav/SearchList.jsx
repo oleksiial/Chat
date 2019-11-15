@@ -2,15 +2,18 @@ import React from 'react';
 import SearchListItem from './SearchListItem';
 
 const SearchList = ({
-  data, onSearchListItemClick, onConversationsListItemClick, conversations, currentConversationId,
+  data,
+  conversations,
+  currentConversationId,
+  onConversationsListItemClick,
+  onSearchUserItemClick,
+  onSearchConversationItemClick,
 }) => (
   <div className="searchList">
-    {data.search.users.map((user) => {
+    {data.search.filteredUsers.map((user) => {
       const existedConversation = conversations.find(
         (conv) => conv.users.find((u) => u.id === user.id),
       );
-
-      console.log(existedConversation);
 
       return (
         <SearchListItem
@@ -21,7 +24,7 @@ const SearchList = ({
           onClick={
             existedConversation
               ? () => onConversationsListItemClick(existedConversation.id)
-              : () => onSearchListItemClick(user)
+              : () => onSearchUserItemClick(user)
         }
         />
       );

@@ -1,12 +1,11 @@
 import React from 'react';
-import { useQuery, useApolloClient } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import { GET_CONVERSATION } from '../requests';
 import Conversation from '../components/Conversation';
 import useSendMessage from '../hooks/useSendMessage';
 
 const ConversationContainer = ({ conversationId }) => {
-  const client = useApolloClient();
-  console.log(client.store);
+  console.log('render not fake', conversationId);
 
   const { loading, error, data } = useQuery(GET_CONVERSATION, { variables: { conversationId } });
   const { sendMessage } = useSendMessage();

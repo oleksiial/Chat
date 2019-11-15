@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import ConversationContainer from '../../containers/ConversationContainer';
 import useMessageSubscription from '../../hooks/useMessageSubscription';
 import useNewConversationSubscription from '../../hooks/useNewConversationSubscription';
-import useConversationLabel from '../../hooks/useConversationLabel';
 import NavContainer from '../../containers/NavContainer';
 import HeaderContainer from '../../containers/HeaderContainer';
 import FakeConversationContainer from '../../containers/FakeConversationContainer';
@@ -13,7 +12,6 @@ const Root = () => {
   const [currentConversationId, setCurrentConversationId] = useState(null);
   useMessageSubscription();
   useNewConversationSubscription();
-  useConversationLabel();
 
   const ConvContainer = currentConversationId < 0
     ? FakeConversationContainer

@@ -1,20 +1,24 @@
 import React, { useState } from 'react';
 import ConversationsList from './ConversationsList';
 
-import useStartConversation from '../../hooks/useStartConversation';
 import useSearch from '../../hooks/useSearch';
 import SearchList from './SearchList';
 
 const Nav = ({
   conversations,
-  onConversationsListItemClick,
-  currentConversationId,
   currentUserId,
-  onSearchItemClick,
+  currentConversationId,
+  onConversationsListItemClick,
+  onSearchUserItemClick,
+  onSearchConversationItemClick,
 }) => {
   const [input, setInput] = useState('');
   const { search, data } = useSearch();
-  const { startConversation } = useStartConversation();
+
+  console.group('Nav');
+  console.log('search data', data);
+  console.log('conversations', conversations);
+  console.groupEnd();
 
   return (
     <div className="nav">
@@ -24,14 +28,16 @@ const Nav = ({
         value={input}
         onChange={(e) => {
           setInput(e.target.value);
-          search(e.target.value);
+          if (e.target.value !== '') {
+            search(e.target.value);
+          }
         }}
       />
       {data && input
         ? (
           <SearchList
             data={data}
-            onSearchListItemClick={onSearchItemClick}
+            onSearchUserItemClick={onSearchUserItemClick}
             onConversationsListItemClick={onConversationsListItemClick}
             conversations={conversations}
             currentConversationId={currentConversationId}
@@ -39,10 +45,11 @@ const Nav = ({
         )
         : (
           <ConversationsList
-            conversations={conversations}
-            onConversationsListItemClick={onConversationsListItemClick}
-            currentConversationId={currentConversationId}
+            // conversations={conversations}
+            conversations={conversations.filter((conv) => conv.id !== -1)}
             currentUserId={currentUserId}
+            currentConversationId={currentConversationId}
+            onConversationsListItemClick={onConversationsListItemClick}
           />
         )}
     </div>

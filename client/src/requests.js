@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 export const fragmentConv = gql`
   fragment conversation on Conversation {
     id
-    label
+    label @client
     type
     users {
       id
@@ -32,7 +32,7 @@ export const fragmentUser = gql`
     username
     conversations {
       id
-      label
+      label @client
       type
       users {
         id
@@ -81,6 +81,14 @@ export const SEARCH = gql`
   query getConversation($pattern: String!) {
     search(pattern: $pattern) {
       users {
+        id
+        username
+      }
+      conversations @client {
+        id
+        label
+      }
+      filteredUsers @client {
         id
         username
       }
@@ -170,4 +178,13 @@ export const MESSAGE_SUBSCRIPTION = gql`
       }
     }
   }
+`;
+
+export const CREATE_FAKE_CONVERSATION = gql`
+  mutation createFakeConversation($currentUserId: ID!, $selectedUser: User!) {
+    createFakeConversation(currentUserId: $currentUserId, selectedUser: $selectedUser) @client {
+      ...conversation
+    }
+  }
+  ${fragmentConv}
 `;
